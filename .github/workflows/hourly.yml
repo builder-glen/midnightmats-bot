@@ -1,4 +1,4 @@
-name: collect-prices
+name: hourly-collect
 
 on:
   schedule:
