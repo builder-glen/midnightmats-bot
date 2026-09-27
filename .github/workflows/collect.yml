@@ -2,7 +2,7 @@ name: collect-prices
 
 on:
   schedule:
-    - cron: "40 * * * *"   # 매시 40분 (UTC 기준이지만 매시간이라 동일). 블리자드 스냅샷(매시 26분경) 직후
+    - cron: "42 * * * *"   # 매시 42분 (UTC 기준이지만 매시간이라 동일). 블리자드 스냅샷(매시 26~33분) 직후
   workflow_dispatch:       # 수동 실행 버튼
 
 concurrency:
