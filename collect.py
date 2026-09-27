@@ -202,8 +202,8 @@ def top_movers(pg, min_listings=20, n=5):
     rows = pg.execute("""
         with latest as (select max(ts) as ts from snapshots),
         hist as (  -- 최근 7일간 시세 이력 개수. 하루치(24회) 미만이면 평균이 의미 없어 제외
-            select item_id, count(*) as n from prices, latest
-            where ts >= latest.ts - interval '7 days' group by item_id)
+            select p.item_id, count(*) as n from prices p, latest
+            where p.ts >= latest.ts - interval '7 days' group by p.item_id)
         select s.profession, s.name, s.tier, s.cur, s.a7, p.listings,
                round((s.cur - s.a7) * 100.0 / s.a7, 1) as pct
         from v_item_stats s
