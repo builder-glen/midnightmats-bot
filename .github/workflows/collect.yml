@@ -1,0 +1,28 @@
+name: collect-prices
+
+on:
+  schedule:
+    - cron: "40 * * * *"   # 매시 40분 (UTC 기준이지만 매시간이라 동일). 블리자드 스냅샷(매시 26분경) 직후
+  workflow_dispatch:       # 수동 실행 버튼
+
+concurrency:
+  group: collect           # 이전 실행이 밀려서 겹치면 동시에 돌지 않게
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Seoul       # 로그·일별 집계 기준 시각. 빠지면 UTC로 찍혀 9시간 어긋남
+      BLIZZARD_CLIENT_ID: ${{ secrets.BLIZZARD_CLIENT_ID }}
+      BLIZZARD_CLIENT_SECRET: ${{ secrets.BLIZZARD_CLIENT_SECRET }}
+      SUPABASE_DSN: ${{ secrets.SUPABASE_DSN }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python collect.py
